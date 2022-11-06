@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Button, Row, Col } from "react-bootstrap";
+import { Modal, Button, Row, Col, Alert } from "react-bootstrap";
 import { Check } from "react-bootstrap-icons";
 import { useState } from "react";
 import { Address, Wallet } from "fuels";
@@ -8,7 +8,7 @@ import { Address, Wallet } from "fuels";
 // You can also do command + space and the compiler will suggest the correct name.
 import { CounterContractAbi, CounterContractAbi__factory } from "../contracts";
 // The address of the contract deployed the Fuel testnet
-const CONTRACT_ID = "0x43c475dca301891ef6e9973b598e733772bdbd1ff9f53e24973ad13a18049a09";
+const CONTRACT_ID = "0x156a4d5f3023fd4073df29d606ced9b63d929124bfbf94d3b25b152fa19f5b53";
 //the private key from createWallet.js
 const WALLET_SECRET = "0x5468d88c1dd5aaf860518cfea55640303e3205ab8c29ad3f8495f3728a32d062";
 // Create a Wallet from given secretKey in this case
@@ -21,6 +21,7 @@ const contract = CounterContractAbi__factory.connect(CONTRACT_ID, wallet);
 export default function RegisterModal(props) {
     const [loading, setLoading] = useState(false);
     const [address, setAddress] = useState(WALLET_SECRET);
+    const [hasRegister, setIsRegistered] = useState(false);
 
     async function register() {
         setLoading(true);
@@ -31,23 +32,49 @@ export default function RegisterModal(props) {
             setAddress(String(address));
             console.log(address);
             await contract.functions.register({ value: address }, props.query).txParams({ gasPrice: 1 }).call();
+            setIsRegistered(true);
         } finally {
             setLoading(false);
-            console.log("finally");
+            console.log(props.query);
+            console.log({
+                Address: {
+                    value: address,
+                },
+            });
+            const mintHash = await contract.functions
+                .mint(
+                    1,
+                    {
+                        Address: {
+                            value: address,
+                        },
+                    },
+                    props.query
+                )
+                .txParams({ gasPrice: 1 })
+                .call();
+            console.log(mintHash);
         }
     }
 
     return (
         <Modal {...props} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
-            <Modal.Body style={{ backgroundColor: "#05040e", color: "white", padding: "100px", height: "500px" }}>
-                <Row className=" justify-content-center ps-4 ms-4 modalConfirmation">
-                    <Col className="col-sm-6 ">
-                        <h1 style={{ color: "white" }} className="mt-4">
+            <Modal.Body style={{ backgroundColor: "#05040e", color: "white", padding: "70px", height: "550px" }}>
+                {hasRegister && (
+                    <Alert className="text-center mb-4 alert" variant="dark">
+                        <h4>
+                            Your domain, <span style={{ fontWeight: "800" }}>{props.query}.fuel</span> has been registered!
+                        </h4>
+                    </Alert>
+                )}
+                <Row className=" justify-content-center ps-4 ms-4 modalConfirmation mt-4">
+                    <Col className="col-sm-7 ">
+                        <h2 style={{ color: "white" }} className="mt-4">
                             <Check color="#01ffc8" size={80}></Check>
                             {props.query}.fuel
-                        </h1>
+                        </h2>
                     </Col>
-                    <Col className="col-sm-6">
+                    <Col className="col-sm-5">
                         <div className="matched">Available</div>
                     </Col>
                 </Row>
@@ -61,9 +88,15 @@ export default function RegisterModal(props) {
                 </Row>
                 <Row style={{ marginTop: "60px" }} className="text-center">
                     <Col>
-                        <Button onClick={register} className="registerDomain" variant="primary">
-                            Confirm Domain
-                        </Button>
+                        {hasRegister === false ? (
+                            <Button onClick={register} className="registerDomain" variant="primary">
+                                Confirm Domain
+                            </Button>
+                        ) : (
+                            <Button onClick={register} className="viewNFT" variant="primary">
+                                View NFT
+                            </Button>
+                        )}
                     </Col>
                 </Row>
             </Modal.Body>

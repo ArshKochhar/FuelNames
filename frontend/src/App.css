@@ -30,6 +30,10 @@
     color: #01ffc8;
 }
 
+.btn.btn-primary[disabled] {
+    background-color: grey;
+}
+
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary:active,
@@ -92,4 +96,19 @@
 .modal-content {
     border: 1px solid white !important;
     border-radius: 30px !important;
+}
+
+.viewNFT {
+    border-radius: 30px;
+    width: 190px;
+    font-size: 20px;
+    background-color: rgb(145, 237, 176);
+    color: #09071a;
+    border: 1px solid grey !important;
+}
+
+.alert {
+    background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(1, 255, 200, 1) 35%, rgba(0, 212, 255, 1) 100%);
+    border: none;
+    border-radius: 30px;
 }

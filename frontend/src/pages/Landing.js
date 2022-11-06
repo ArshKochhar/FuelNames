@@ -12,7 +12,7 @@ import { Address, Wallet } from "fuels";
 // You can also do command + space and the compiler will suggest the correct name.
 import { CounterContractAbi, CounterContractAbi__factory } from "../contracts";
 // The address of the contract deployed the Fuel testnet
-const CONTRACT_ID = "0x43c475dca301891ef6e9973b598e733772bdbd1ff9f53e24973ad13a18049a09";
+const CONTRACT_ID = "0x156a4d5f3023fd4073df29d606ced9b63d929124bfbf94d3b25b152fa19f5b53";
 //the private key from createWallet.js
 const WALLET_SECRET = "0x5468d88c1dd5aaf860518cfea55640303e3205ab8c29ad3f8495f3728a32d062";
 // Create a Wallet from given secretKey in this case
@@ -71,12 +71,12 @@ export default function Landing() {
     return (
         <div className="App-header">
             <Navbar></Navbar>
-            <Container style={{ marginTop: "150px" }} className="text-center" fluid>
+            <Container style={{ marginTop: "150px", marginLeft: "150px" }} className="text-center" fluid>
                 <Row className="justify-content-center ms-4 ps-4 ">
                     <Col className="col-sm-5 mt-4 pt-4">
                         <Row>
                             <h1 className="fuelTitle">
-                                <span style={{ color: "#01FFC8" }}>F</span>uel Name<span style={{ color: "#01FFC8" }}>s</span> Service
+                                <span style={{ color: "#01FFC8" }}>F</span>uel <span style={{ color: "#01FFC8" }}>N</span>ames <span style={{ color: "#01FFC8" }}>S</span>ervice
                             </h1>
                         </Row>
 
@@ -87,7 +87,7 @@ export default function Landing() {
                                         <Search size={40} color="grey"></Search>
                                     </Button>
                                     <Form.Control onChange={handleChange} className="formSearch" style={{ height: "70px", fontSize: "30px", backgroundColor: "#09071a", color: "white" }} placeholder="Search For Your Name" aria-label="Recipient's username" aria-describedby="basic-addon2" />
-                                    <InputGroup.Text style={{ fontSize: "30px" }} id="basic-addon2">
+                                    <InputGroup.Text style={{ fontSize: "30px", backgroundColor: "#01ffc8" }} id="basic-addon2">
                                         .fuel
                                     </InputGroup.Text>
                                 </InputGroup>

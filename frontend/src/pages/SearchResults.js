@@ -10,7 +10,7 @@ import { Address, Wallet } from "fuels";
 // You can also do command + space and the compiler will suggest the correct name.
 import { CounterContractAbi, CounterContractAbi__factory } from "../contracts";
 // The address of the contract deployed the Fuel testnet
-const CONTRACT_ID = "0x43c475dca301891ef6e9973b598e733772bdbd1ff9f53e24973ad13a18049a09";
+const CONTRACT_ID = "0x156a4d5f3023fd4073df29d606ced9b63d929124bfbf94d3b25b152fa19f5b53";
 //the private key from createWallet.js
 const WALLET_SECRET = "0x5468d88c1dd5aaf860518cfea55640303e3205ab8c29ad3f8495f3728a32d062";
 // Create a Wallet from given secretKey in this case
@@ -45,13 +45,12 @@ export default function SearchResults() {
 
     async function get_name(event) {
         setLoading(true);
-        setSearch(event.target.value);
         try {
             // setName(String(name));
             console.log(search, "in get_name function");
             //await contract.functions.get_name(name).txParams({ gasPrice: 1}).call();
         } finally {
-            const retrievedName = await contract.functions.get_name(search).get();
+            const retrievedName = await contract.functions.get_name(query).get();
             if (retrievedName.value.value === "0x0000000000000000000000000000000000000000000000000000000000000000") {
                 setIsRegistered(false);
             } else {
@@ -62,8 +61,8 @@ export default function SearchResults() {
     }
 
     const handleChange = (event) => {
-        console.log(search, "Handling Change");
-        setSearch(event.target.value);
+        console.log(query, "Handling Change");
+        setQuery(event.target.value);
     };
 
     return (
@@ -78,7 +77,7 @@ export default function SearchResults() {
                                     <Search size={40} color="grey"></Search>
                                 </Button>
                                 <Form.Control onChange={handleChange} className="formSearch" style={{ height: "70px", fontSize: "30px", backgroundColor: "#09071a", color: "white" }} placeholder={query !== "" ? query : search} aria-label="Recipient's username" aria-describedby="basic-addon2" />
-                                <InputGroup.Text style={{ fontSize: "30px" }} id="basic-addon2">
+                                <InputGroup.Text style={{ fontSize: "30px", backgroundColor: "#01ffc8" }} id="basic-addon2">
                                     .fuel
                                 </InputGroup.Text>
                             </InputGroup>
@@ -117,7 +116,7 @@ export default function SearchResults() {
                                     </Col>
                                 )}
                             </Row>
-                            <Button className="registerDomain" variant="primary" onClick={() => setModalShow(true)}>
+                            <Button disabled={isRegistered} className="registerDomain" variant="primary" onClick={() => setModalShow(true)}>
                                 Register Domain
                             </Button>
                         </Container>
