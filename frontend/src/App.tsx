@@ -74,7 +74,7 @@ function App() {
                 {" "}
                 <Routes>
                     {" "}
-                    <Route path="/landing" element={<Landing />} />
+                    <Route path="/" element={<Landing />} />
                     <Route path="/searchResults" element={<SearchResults />} />
                 </Routes>{" "}
             </Router>{" "}
