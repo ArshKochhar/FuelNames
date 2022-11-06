@@ -24,29 +24,27 @@ const contract = CounterContractAbi__factory.connect(CONTRACT_ID, wallet);
 function App() {
   const [loading, setLoading] = useState(false);
   const [address, setAddress] = useState(WALLET_SECRET);
-  const [name, setName] = useState("");
+  const [name, setName] = useState("")
 
   useEffect(() => {
     async function main() {
       // Executes the counter function to query the current contract state
       // the `.get()` is read-only, because of this it don't expand coins.
-      const { value } = await contract.functions.get_name(name).get();
+      const { value } = await contract.functions.get_name(name).get()
     }
     main();
   }, []);
 
+
   async function register() {
     setLoading(true);
-    console.log(loading, "before");
+    console.log(loading,"before");
     // Creates a transactions to call the increment function
     // because it creates a TX and updates the contract state this requires the wallet to have enough coins to cover the costs and also to sign the Transaction
     try {
       setAddress(String(address));
       console.log(address);
-      await contract.functions
-        .register({ value: address }, name)
-        .txParams({ gasPrice: 1 })
-        .call();
+      await contract.functions.register({ value: address}, name).txParams({ gasPrice: 1 }).call();
     } finally {
       setLoading(false);
       console.log("finally");
@@ -57,7 +55,7 @@ function App() {
     setLoading(true);
     try {
       // setName(String(name));
-      console.log(name, "in get_name function");
+      console.log(name, 'in get_name function')
       //await contract.functions.get_name(name).txParams({ gasPrice: 1}).call();
     } finally {
       const retrievedName = await contract.functions.get_name(name).get();
@@ -68,9 +66,11 @@ function App() {
   }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(name, "Handling Change");
+    console.log(name, 'Handling Change')
     setName(event.target.value);
   };
+
+
 
   return (
     <div className="App">
