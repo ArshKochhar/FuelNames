@@ -19,8 +19,8 @@ use std::{
 };
 
 storage {
-    addressToNames: StorageMap<Address, str[5]> = StorageMap {},
-    namesToAddress: StorageMap<str[5], Address> = StorageMap {},
+    addressToNames: StorageMap<Address, str[20]> = StorageMap {},
+    namesToAddress: StorageMap<str[20], Address> = StorageMap {},
     
     /// Determines if only the contract's `admin` is allowed to call the mint function.
     /// This is only set on the initalization of the contract.
@@ -77,12 +77,12 @@ storage {
 
 impl NFT for Contract {
     #[storage(read)]
-    fn get_name(name: str[5]) -> Address {
+    fn get_name(name: str[20]) -> Address {
         storage.namesToAddress.get(name)
     }
     
     #[storage(read, write)]
-    fn register(address_owner: Address, name: str[5]) {
+    fn register(address_owner: Address, name: str[20]) {
 
         storage.addressToNames.insert(address_owner, name);
         storage.namesToAddress.insert(name, address_owner);
@@ -183,7 +183,7 @@ impl NFT for Contract {
     }
 
     #[storage(read, write)]
-    fn mint(amount: u64, to: Identity, name: str[5]) {
+    fn mint(amount: u64, to: Identity, name: str[20]) {
         let tokens_minted = storage.tokens_minted;
         let total_mint = tokens_minted + amount;
         // The current number of tokens minted plus the amount to be minted cannot be
