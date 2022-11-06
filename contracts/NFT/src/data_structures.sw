@@ -5,6 +5,8 @@ pub struct TokenMetaData {
     name: str[7],
 }
 
+
+// essentially a constructor/intializer for tokenMetaData
 impl TokenMetaData {
     fn new() -> Self {
         Self {
