@@ -4,6 +4,21 @@ import { Col, Container, Row, Image, Form, Button, InputGroup } from "react-boot
 import { Search, Check, SlashCircleFill } from "react-bootstrap-icons";
 import NavBar from "../components/NavBar";
 import RegisterModal from "../components/RegisterModal";
+import { Address, Wallet } from "fuels";
+
+// Import the contract factory -- you can find the name in index.ts.
+// You can also do command + space and the compiler will suggest the correct name.
+import { CounterContractAbi, CounterContractAbi__factory } from "../contracts";
+// The address of the contract deployed the Fuel testnet
+const CONTRACT_ID = "0x43c475dca301891ef6e9973b598e733772bdbd1ff9f53e24973ad13a18049a09";
+//the private key from createWallet.js
+const WALLET_SECRET = "0x5468d88c1dd5aaf860518cfea55640303e3205ab8c29ad3f8495f3728a32d062";
+// Create a Wallet from given secretKey in this case
+// The one we configured at the chainConfig.json
+const wallet = new Wallet(WALLET_SECRET, "https://node-beta-1.fuel.network/graphql");
+// Connects out Contract instance to the deployed contract
+// address using the given wallet.
+const contract = CounterContractAbi__factory.connect(CONTRACT_ID, wallet);
 
 export default function SearchResults() {
     const [query, setQuery] = useState("");
@@ -13,6 +28,12 @@ export default function SearchResults() {
     const [isRegistered, setIsRegistered] = useState(false);
 
     useEffect(() => {
+        async function main() {
+            // Executes the counter function to query the current contract state
+            // the `.get()` is read-only, because of this it don't expand coins.
+            const { value } = await contract.functions.get_name(search).get();
+        }
+        main();
         setQuery(localStorage.getItem("query"));
         const addy = localStorage.getItem("isRegistered");
         if (addy === "0x0000000000000000000000000000000000000000000000000000000000000000") {
@@ -22,28 +43,28 @@ export default function SearchResults() {
         }
     }, []);
 
-    function getQuery(event) {
+    async function get_name(event) {
+        setLoading(true);
         setSearch(event.target.value);
-    }
-    function storeQuery() {
-        setQuery(localStorage.setItem("query", search));
-        // navigate("/searchResults");
+        try {
+            // setName(String(name));
+            console.log(search, "in get_name function");
+            //await contract.functions.get_name(name).txParams({ gasPrice: 1}).call();
+        } finally {
+            const retrievedName = await contract.functions.get_name(search).get();
+            if (retrievedName.value.value === "0x0000000000000000000000000000000000000000000000000000000000000000") {
+                setIsRegistered(false);
+            } else {
+                setIsRegistered(true);
+            }
+            setLoading(false);
+        }
     }
 
-    // async function register() {
-    //     setLoading(true);
-    //     console.log(loading, "before");
-    //     // Creates a transactions to call the increment function
-    //     // because it creates a TX and updates the contract state this requires the wallet to have enough coins to cover the costs and also to sign the Transaction
-    //     try {
-    //         setAddress(String(address));
-    //         console.log(address);
-    //         await contract.functions.register({ value: address }, name).txParams({ gasPrice: 1 }).call();
-    //     } finally {
-    //         setLoading(false);
-    //         console.log("finally");
-    //     }
-    // }
+    const handleChange = (event) => {
+        console.log(search, "Handling Change");
+        setSearch(event.target.value);
+    };
 
     return (
         <div className="App-header">
@@ -53,10 +74,10 @@ export default function SearchResults() {
                     <Col className="col-7">
                         <Form>
                             <InputGroup className="mb-3">
-                                <Button onClick={storeQuery} style={{ backgroundColor: "#09071a", width: "90px", border: "1px solid white" }}>
+                                <Button onClick={get_name} style={{ backgroundColor: "#09071a", width: "90px", border: "1px solid white" }}>
                                     <Search size={40} color="grey"></Search>
                                 </Button>
-                                <Form.Control onChange={getQuery} className="formSearch" style={{ height: "70px", fontSize: "30px", backgroundColor: "#09071a", color: "white" }} placeholder={query !== "" ? query : search} aria-label="Recipient's username" aria-describedby="basic-addon2" />
+                                <Form.Control onChange={handleChange} className="formSearch" style={{ height: "70px", fontSize: "30px", backgroundColor: "#09071a", color: "white" }} placeholder={query !== "" ? query : search} aria-label="Recipient's username" aria-describedby="basic-addon2" />
                                 <InputGroup.Text style={{ fontSize: "30px" }} id="basic-addon2">
                                     .fuel
                                 </InputGroup.Text>
