@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { Col, Container, Row, Image, Form, Button, InputGroup } from "react-bootstrap";
-import { Search, Check } from "react-bootstrap-icons";
+import { Search, Check, SlashCircleFill } from "react-bootstrap-icons";
 import NavBar from "../components/NavBar";
 import RegisterModal from "../components/RegisterModal";
 
@@ -9,10 +9,18 @@ export default function SearchResults() {
     const [query, setQuery] = useState("");
     const [search, setSearch] = useState("Search For Your Name");
     const [modalShow, setModalShow] = React.useState(false);
+    const [loading, setLoading] = useState(false);
+    const [isRegistered, setIsRegistered] = useState(false);
 
     useEffect(() => {
         setQuery(localStorage.getItem("query"));
-    });
+        const addy = localStorage.getItem("isRegistered");
+        if (addy === "0x0000000000000000000000000000000000000000000000000000000000000000") {
+            setIsRegistered(false);
+        } else {
+            setIsRegistered(true);
+        }
+    }, []);
 
     function getQuery(event) {
         setSearch(event.target.value);
@@ -21,6 +29,21 @@ export default function SearchResults() {
         setQuery(localStorage.setItem("query", search));
         // navigate("/searchResults");
     }
+
+    // async function register() {
+    //     setLoading(true);
+    //     console.log(loading, "before");
+    //     // Creates a transactions to call the increment function
+    //     // because it creates a TX and updates the contract state this requires the wallet to have enough coins to cover the costs and also to sign the Transaction
+    //     try {
+    //         setAddress(String(address));
+    //         console.log(address);
+    //         await contract.functions.register({ value: address }, name).txParams({ gasPrice: 1 }).call();
+    //     } finally {
+    //         setLoading(false);
+    //         console.log("finally");
+    //     }
+    // }
 
     return (
         <div className="App-header">
@@ -47,16 +70,31 @@ export default function SearchResults() {
                             <Row className="text-left ps-4" style={{ background: "grey", borderTopRightRadius: "30px", borderTopLeftRadius: "30px", padding: "5px", border: "3px solid grey " }}>
                                 <h4 className="exactMatch">Exact Match</h4>
                             </Row>
-                            <Row className="mt-4 justify-content-center ps-4 ms-4">
-                                <Col className="col-sm-6 ">
-                                    <h1 style={{ color: "white" }} className="mt-4">
-                                        <Check color="#01ffc8" size={80}></Check>
-                                        {query}.fuel
+                            <Row className="mt-4 justify-content-center ps-4 ms-4 mb-4">
+                                <Col className="col-sm-6 mt-3 ">
+                                    <h1 style={{ color: "white" }} className="">
+                                        {isRegistered === true ? (
+                                            <h2>
+                                                <SlashCircleFill className="me-2" color="red" size={50}></SlashCircleFill>
+                                                {query}.fuel
+                                            </h2>
+                                        ) : (
+                                            <h2>
+                                                <Check className="me-2" color="#01ffc8" size={80}></Check>
+                                                {query}.fuel
+                                            </h2>
+                                        )}
                                     </h1>
                                 </Col>
-                                <Col className="col-sm-6">
-                                    <div className="matched">Available</div>
-                                </Col>
+                                {isRegistered === true ? (
+                                    <Col className="col-sm-6 ">
+                                        <h2 className="unmatched">Unavailable</h2>
+                                    </Col>
+                                ) : (
+                                    <Col className="col-sm-6 ">
+                                        <h2 className="matched">Available</h2>
+                                    </Col>
+                                )}
                             </Row>
                             <Button className="registerDomain" variant="primary" onClick={() => setModalShow(true)}>
                                 Register Domain
