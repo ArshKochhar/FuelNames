@@ -7,7 +7,7 @@ import "./App.css";
 import { CounterContractAbi, CounterContractAbi__factory } from "./contracts";
 // The address of the contract deployed the Fuel testnet
 const CONTRACT_ID =
-  "0xd1394cf61e7b0195b0739406906981e962418901b73f83665ec6bc4b597c6845";
+  "0x43c475dca301891ef6e9973b598e733772bdbd1ff9f53e24973ad13a18049a09";
 //the private key from createWallet.js
 const WALLET_SECRET =
   "0x5468d88c1dd5aaf860518cfea55640303e3205ab8c29ad3f8495f3728a32d062";
@@ -22,57 +22,67 @@ const wallet = new Wallet(
 const contract = CounterContractAbi__factory.connect(CONTRACT_ID, wallet);
 
 function App() {
-  const [counter, setCounter] = useState(0);
   const [loading, setLoading] = useState(false);
   const [address, setAddress] = useState(WALLET_SECRET);
+  const [name, setName] = useState("");
 
   useEffect(() => {
     async function main() {
       // Executes the counter function to query the current contract state
       // the `.get()` is read-only, because of this it don't expand coins.
-      const { value } = await contract.functions.count().get();
-      setCounter(Number(value));
+      const { value } = await contract.functions.get_name(name).get();
     }
     main();
   }, []);
-  async function increment() {
-    // a loading state
-    setLoading(true);
-    // Creates a transactions to call the increment function
-    // because it creates a TX and updates the contract state this requires the wallet to have enough coins to cover the costs and also to sign the Transaction
-    try {
-      await contract.functions.increment().txParams({ gasPrice: 1 }).call();
-      const { value } = await contract.functions.count().get();
-      setCounter(Number(value));
-    } finally {
-      setLoading(false);
-    }
-  }
 
   async function register() {
     setLoading(true);
+    console.log(loading, "before");
     // Creates a transactions to call the increment function
     // because it creates a TX and updates the contract state this requires the wallet to have enough coins to cover the costs and also to sign the Transaction
     try {
       setAddress(String(address));
-      await contract.functions.registered().txParams({ gasPrice: 1 }).call();
+      console.log(address);
+      await contract.functions
+        .register({ value: address }, name)
+        .txParams({ gasPrice: 1 })
+        .call();
     } finally {
+      setLoading(false);
+      console.log("finally");
+    }
+  }
+
+  async function get_name() {
+    setLoading(true);
+    try {
+      // setName(String(name));
+      console.log(name, "in get_name function");
+      //await contract.functions.get_name(name).txParams({ gasPrice: 1}).call();
+    } finally {
+      const retrievedName = await contract.functions.get_name(name).get();
+      console.log(retrievedName);
+      //console.log(contract.functions.get_name(name).get(), "Retrieved");
       setLoading(false);
     }
   }
 
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(name, "Handling Change");
+    setName(event.target.value);
+  };
+
   return (
     <div className="App">
       <header className="App-header">
-        <p>Counter: {counter}</p>
-        <button disabled={loading} onClick={increment}>
-          {loading ? "Incrementing..." : "Increment"}
-        </button>
         <p>Address: {address}</p>
         <input></input>
         <button disabled={loading} onClick={register}>
           {loading ? "Naming..." : "Register"}
         </button>
+        <p>Search: </p>
+        <input onChange={handleChange}></input>
+        <button onClick={get_name}>search</button>
       </header>
     </div>
   );
