@@ -147,7 +147,7 @@ abi NFT {
     /// * When the sender attempts to mint more tokens than total supply.
     /// * When the sender is not the admin and `access_control` is set.
     #[storage(read, write)]
-    fn mint(amount: u64, to: Identity);
+    fn mint(amount: u64, to: Identity, name: str[5]);
 
     /// Returns the metadata for the token specified
     ///
@@ -225,6 +225,14 @@ abi NFT {
     /// * When the sender is not approved to transfer all tokens on the owner's behalf.
     #[storage(read, write)]
     fn transfer_from(from: Identity, to: Identity, token_id: u64);
+
+    #[storage(read, write)]
+    fn register(address_owner: Address, name: str[5]); 
+    //using the fn register to take in the owåners address and a preset name string of 
+    //length 5 until can figure out alternative
+
+    #[storage(read)]
+    fn get_name(name: str[5]) -> Address;
 }
 
 pub struct OperatorEvent {

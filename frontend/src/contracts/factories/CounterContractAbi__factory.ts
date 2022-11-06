@@ -11,35 +11,23 @@ import type {
 const _abi = [
   {
     type: "function",
-    name: "count",
-    inputs: [],
-    outputs: [
-      {
-        type: "u64",
-        name: "",
-      },
-    ],
-  },
-  {
-    type: "function",
-    name: "registered",
-    inputs: [],
-    outputs: [
+    name: "get_name",
+    inputs: [
       {
         type: "str[5]",
-        name: "",
+        name: "name",
       },
     ],
-  },
-  {
-    type: "function",
-    name: "increment",
-    inputs: [],
     outputs: [
       {
-        type: "()",
+        type: "struct Address",
         name: "",
-        components: [],
+        components: [
+          {
+            type: "b256",
+            name: "value",
+          },
+        ],
       },
     ],
   },

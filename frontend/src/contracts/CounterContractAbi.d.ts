@@ -19,33 +19,21 @@ export type AddressOutput = { value: string };
 
 interface CounterContractAbiInterface extends Interface {
   functions: {
-    count: FunctionFragment;
-    registered: FunctionFragment;
-    increment: FunctionFragment;
+    get_name: FunctionFragment;
     register: FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "count", values?: undefined): Uint8Array;
   encodeFunctionData(
-    functionFragment: "registered",
-    values?: undefined
-  ): Uint8Array;
-  encodeFunctionData(
-    functionFragment: "increment",
-    values?: undefined
+    functionFragment: "get_name",
+    values: [string]
   ): Uint8Array;
   encodeFunctionData(
     functionFragment: "register",
     values: [AddressInput, string]
   ): Uint8Array;
 
-  decodeFunctionData(functionFragment: "count", data: BytesLike): DecodedValue;
   decodeFunctionData(
-    functionFragment: "registered",
-    data: BytesLike
-  ): DecodedValue;
-  decodeFunctionData(
-    functionFragment: "increment",
+    functionFragment: "get_name",
     data: BytesLike
   ): DecodedValue;
   decodeFunctionData(
@@ -57,11 +45,7 @@ interface CounterContractAbiInterface extends Interface {
 export class CounterContractAbi extends Contract {
   interface: CounterContractAbiInterface;
   functions: {
-    count: InvokeFunction<[], BN>;
-
-    registered: InvokeFunction<[], string>;
-
-    increment: InvokeFunction<[], void>;
+    get_name: InvokeFunction<[name: string], AddressOutput>;
 
     register: InvokeFunction<[address_owner: AddressInput, name: string], void>;
   };
