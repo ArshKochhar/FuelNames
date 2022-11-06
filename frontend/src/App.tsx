@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Address, Wallet } from "fuels";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Landing from "./pages/Landing";
+import SearchResults from "./pages/SearchResults";
 import "./App.css";
 
 // Import the contract factory -- you can find the name in index.ts.
@@ -9,8 +12,10 @@ import { CounterContractAbi, CounterContractAbi__factory } from "./contracts";
 const CONTRACT_ID =
   "0x43c475dca301891ef6e9973b598e733772bdbd1ff9f53e24973ad13a18049a09";
 //the private key from createWallet.js
+
 const WALLET_SECRET =
   "0x5468d88c1dd5aaf860518cfea55640303e3205ab8c29ad3f8495f3728a32d062";
+
 // Create a Wallet from given secretKey in this case
 // The one we configured at the chainConfig.json
 const wallet = new Wallet(
@@ -22,6 +27,7 @@ const wallet = new Wallet(
 const contract = CounterContractAbi__factory.connect(CONTRACT_ID, wallet);
 
 function App() {
+
   const [loading, setLoading] = useState(false);
   const [address, setAddress] = useState(WALLET_SECRET);
   const [name, setName] = useState("")
@@ -49,7 +55,18 @@ function App() {
       setLoading(false);
       console.log("finally");
     }
-  }
+
+
+    return (
+        <div className="">
+            <Router>
+                <Routes>
+                    <Route path="/landing" element={<Landing />} />
+                    <Route path="/searchResults" element={<SearchResults />} />
+                </Routes>
+            </Router>
+        </div>
+    );
 
   async function get_name() {
     setLoading(true);
@@ -86,5 +103,6 @@ function App() {
       </header>
     </div>
   );
+
 }
 export default App;
